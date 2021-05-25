@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teleprompter</title>
+  </head>
+  <body id="body">
+    <div>
+      <h1>Speeches</h1>
+      <div id="speech"></div>
+
+      <div class="buttonDiv">
+        <button onclick="increaseFontSize()">+</button>
+        <button onclick="decreaseFontSize()">-</button>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+    <script>
+      document.getElementById('body').style.fontSize =
+        localStorage.getItem('font') || '32px';
+
+      function increaseFontSize() {
+        const currentSize = document.getElementById('body').style.fontSize;
+
+        const newSize =
+          parseInt(currentSize.substring(0, currentSize.length - 2)) + 2;
+
+        localStorage.setItem('font', `${newSize}px`);
+
+        document.getElementById('body').style.fontSize = `${newSize}px`;
+      }
+      function decreaseFontSize() {
+        const currentSize = document.getElementById('body').style.fontSize;
+
+        const newSize =
+          parseInt(currentSize.substring(0, currentSize.length - 2)) - 2;
+
+        localStorage.setItem('font', `${newSize}px`);
+
+        document.getElementById('body').style.fontSize = `${newSize}px`;
+      }
+
+      (async () => {
+        const speech = document.getElementById('speech');
+        const speeches = (
+          await axios.get(window.location.protocol + '/api/speeches')
+        ).data.speeches;
+
+        let text = ``;
+        speeches.forEach(s => {
+          text += `
+          <div>
+            <h2><a href="${window.location.protocol}/speech/${s._id}">${s.title}</a></h2>
+            <p>${s.text}</p>
+          </div>
+          `;
+        });
+        speech.innerHTML = text;
+      })();
+    </script>
+
+    <style>
+      body {
+        max-width: 90%;
+        max-width: 650px;
+        padding: 25px;
+        min-height: 100vh;
+
+        font-size: 32px;
+        margin: auto;
+
+        border: 1px solid #303030;
+      }
+
+      .buttonDiv {
+        display: flex;
+        position: absolute;
+
+        width: 100px;
+
+        justify-content: space-between;
+
+        top: 50px;
+        right: 50px;
+      }
+    </style>
+  </body>
+</html>

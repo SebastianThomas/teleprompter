@@ -1,14 +1,21 @@
 import fs from 'fs';
+import { v4 as uuidV4 } from 'uuid';
 
 export const filePath: string = './server/speeches/speeches.json';
 
 export class Speech {
   title: string;
   text: string;
+  _id: string;
 
-  constructor(title: string = 'Default', text: string = 'None') {
+  constructor(
+    title: string = 'Default',
+    text: string = 'None',
+    _id: string = uuidV4()
+  ) {
     this.title = title;
     this.text = text;
+    this._id = _id;
   }
 
   static from(json: any) {

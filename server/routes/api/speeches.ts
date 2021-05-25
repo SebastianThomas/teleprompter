@@ -8,11 +8,14 @@ const router = express.Router();
  * @desc    Get all speeches
  * @access  Public
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   console.log(`GET /api/speeches/`);
+
+  const speeches: Speech[] = await Speech.getSpeechesFromFile();
 
   res.status(200).json({
     msg: `GET /api/speeches/`,
+    speeches,
   });
 });
 

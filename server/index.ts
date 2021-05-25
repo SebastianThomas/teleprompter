@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 
 import { Speech } from './models/Speech';
 
@@ -25,10 +26,14 @@ app.use((req, res, next) => {
 });
 
 // Use routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/../' + 'client/html/index.html'));
+});
 app.use('/api/speeches', speeches);
 
+const useVue = false;
 // Handle production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && useVue) {
   app.use(express.static(__dirname + '/public/'));
 
   // Handle Single Page Application
