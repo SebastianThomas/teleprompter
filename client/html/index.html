@@ -9,6 +9,7 @@
   <body id="body">
     <div>
       <h1>Speeches</h1>
+
       <div id="speech"></div>
 
       <div class="buttonDiv">
@@ -49,11 +50,13 @@
           await axios.get(window.location.protocol + '/api/speeches')
         ).data.speeches;
 
-        let text = ``;
+        let text = `
+          <a href="${window.location.protocol}/speeches/add">Eine neue Rede hinzufügen</a>
+        `;
         speeches.forEach(s => {
           text += `
           <div>
-            <h2><a href="${window.location.protocol}/speech/${s._id}">${s.title}</a></h2>
+            <h2><a href="${window.location.protocol}/speeches/${s._id}">${s.title}</a></h2>
             <p>${s.text}</p>
           </div>
           `;
@@ -67,12 +70,23 @@
         max-width: 90%;
         max-width: 650px;
         padding: 25px;
-        min-height: 100vh;
+        min-height: calc(100vh - 55px);
 
         font-size: 32px;
         margin: auto;
 
         border: 1px solid #303030;
+      }
+
+      #speech * {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+
+        margin: 0.25rem;
+
+        font-size: 1em;
       }
 
       .buttonDiv {

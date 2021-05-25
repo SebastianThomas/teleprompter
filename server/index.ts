@@ -8,12 +8,13 @@ import speeches from './routes/api/speeches';
 
 let currentSpeeches: Speech[];
 
-(async () => {
+const getSpeeches = async () => {
   currentSpeeches = await Speech.getSpeechesFromFile();
-  console.log(currentSpeeches);
-})();
+  Speech.speeches = currentSpeeches;
+};
 
-console.log('Got speeches');
+getSpeeches();
+setInterval(getSpeeches, 10 * 1000);
 
 const app = express();
 
@@ -28,6 +29,12 @@ app.use((req, res, next) => {
 // Use routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/../' + 'client/html/index.html'));
+});
+app.get('/speeches/add', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client/html/addSpeech.html'));
+});
+app.get('/speeches/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client/html/speech.html'));
 });
 app.use('/api/speeches', speeches);
 

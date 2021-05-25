@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teleprompter - Rede</title>
+  </head>
+  <body id="body">
+    <div id="speech-container">
+      <div id="speech-title"></div>
+      <div id="speech"></div>
+
+      <div class="buttonDiv">
+        <button onclick="increaseFontSize()">+</button>
+        <button onclick="decreaseFontSize()">-</button>
+      </div>
+      <div id="speed"></div>
+
+      <div id="error"></div>
+    </div>
+
+    <script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+    <script>
+      let speed = 50;
+      let divisor = 100;
+      const wait = 50;
+      let running = false;
+
+      let topOffset = 300;
+
+      let scrollingTimeout = window.setTimeout(scroll, wait);
+
+      // ----------- Scroll functions ----------- //
+      const element = document.getElementById('speech');
+
+      element.style.top = `${topOffset}px`;
+
+      function toggleScroll() {
+        if (running) {
+          window.setInterval(doScroll, wait);
+          doScroll();
+        } else {
+          window.clearInterval(scrollingTimeout);
+          scrollingTimeout = null;
+        }
+      }
+
+      function doScroll() {
+        if (running) {
+          let y = topOffset;
+
+          y = y - speed / divisor;
+          topOffset = y;
+
+          y = y + 'px';
+
+          element.style.top = y;
+        }
+      }
+
+      // ----------- Scroll speed / Start Stop ----------- //
+      function increaseSpeed(value) {
+        speed += value;
+        document.getElementById(
+          'speed'
+        ).innerHTML = `<span>Geschwindigkeit: ${speed}</span>`;
+      }
+
+      function enterPressed() {
+        running = !running;
+
+        toggleScroll();
+      }
+
+      function scroll() {
+        if (!running) return;
+      }
+
+      // ----------- Event Listeners ----------- //
+
+      function registerListeners() {
+        addEventListener('keydown', e => {
+          switch (e.code) {
+            case 'ArrowUp':
+              return increaseSpeed(-5);
+            case 'ArrowDown':
+              return increaseSpeed(5);
+            case 'KeyJ':
+              return increaseSpeed(-20);
+            case 'KeyL':
+              return increaseSpeed(20);
+            case 'Enter':
+              return enterPressed();
+          }
+        });
+      }
+
+      registerListeners();
+
+      // ----------- Style updates ----------- //
+
+      document.getElementById('body').style.fontSize =
+        localStorage.getItem('font') || '60px';
+
+      function increaseFontSize() {
+        const currentSize = document.getElementById('body').style.fontSize;
+
+        const newSize =
+          parseInt(currentSize.substring(0, currentSize.length - 2)) + 2;
+
+        localStorage.setItem('font', `${newSize}px`);
+
+        document.getElementById('body').style.fontSize = `${newSize}px`;
+      }
+      function decreaseFontSize() {
+        const currentSize = document.getElementById('body').style.fontSize;
+
+        const newSize =
+          parseInt(currentSize.substring(0, currentSize.length - 2)) - 2;
+
+        localStorage.setItem('font', `${newSize}px`);
+
+        document.getElementById('body').style.fontSize = `${newSize}px`;
+      }
+
+      // ----------- Fetch speech and HTML it ----------- //
+
+      function speechNotFound() {
+        console.log('Not found');
+        document.getElementById('error').innerText =
+          'Error 404: Speech not found';
+      }
+
+      (async () => {
+        const speechEl = document.getElementById('speech');
+
+        const res = await axios.get(
+          `${window.location.protocol}/api/speeches/${window.location.pathname
+            .split('/')
+            .pop()}`
+        );
+
+        if (!res || !res.data.speech) return speechNotFound();
+
+        const speech = res.data.speech;
+
+        let text = ``;
+        text += `
+          <div>
+            <p>${speech.text}</p>
+            </div>
+            `;
+        speechEl.innerHTML = text;
+
+        document.getElementById(
+          'speech-title'
+        ).innerHTML = `<h2>${speech.title}</h2>`;
+      })();
+    </script>
+
+    <style>
+      h2 {
+        font-size: 4.5rem;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      body {
+        max-width: 90%;
+        max-width: 650px;
+        height: 100vh;
+        overflow: hidden;
+
+        padding: 25px;
+        padding-top: 0;
+
+        background-color: #aaaaaa;
+
+        font-size: 60px;
+        margin: auto;
+      }
+
+      .buttonDiv {
+        display: flex;
+        position: absolute;
+
+        width: 100px;
+
+        justify-content: space-evenly;
+
+        top: 3rem;
+        right: 1rem;
+      }
+
+      #speech-title {
+        background-color: #aaaaaa;
+      }
+
+      #speech {
+        position: absolute;
+        overflow: hidden;
+
+        max-width: 80%;
+        max-width: calc(650px * 8 / 9);
+
+        z-index: -1;
+      }
+
+      #speed {
+        position: absolute;
+
+        font-size: 16px;
+
+        top: 5rem;
+        right: 1rem;
+      }
+
+      #error {
+        font-size: 32px;
+        color: red;
+
+        margin: auto;
+        padding-top: 2rem;
+      }
+    </style>
+  </body>
+</html>

@@ -4,6 +4,8 @@ import { v4 as uuidV4 } from 'uuid';
 export const filePath: string = './server/speeches/speeches.json';
 
 export class Speech {
+  static speeches: Speech[];
+
   title: string;
   text: string;
   _id: string;
@@ -41,5 +43,16 @@ export class Speech {
     });
 
     return promise;
+  }
+
+  static getSingleSpeech(id: string): Speech | undefined {
+    return Speech.speeches.find(speech => {
+      return speech._id == id;
+    });
+  }
+
+  static addSpeech(speech: Speech): void {
+    Speech.speeches.push(speech);
+    Speech.saveSpeechesToFile(Speech.speeches);
   }
 }

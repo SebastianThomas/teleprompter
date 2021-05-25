@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teleprompter - Neue Rede</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form">
+        <input id="speech-title" type="text" placeholder="Titel" />
+        <textarea id="speech-text" cols="30" rows="10"></textarea>
+
+        <button onclick="submitSpeech()">Bestätigen</button>
+      </div>
+      <div id="error"></div>
+    </div>
+
+    <script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+    <script>
+      async function submitSpeech() {
+        const titleEl = document.getElementById('speech-title');
+        const textEl = document.getElementById('speech-text');
+
+        if (!titleEl.value || !textEl.value) {
+          console.log('Beide Felder ausfüllen');
+          document.getElementById('error').innerText =
+            'Bitte beide Felder ausfüllen!';
+          console.log(document.getElementById('error'));
+          return;
+        }
+
+        try {
+          console.log('Posting');
+          const res = await axios.post(
+            window.location.protocol + '/api/speeches/',
+            {
+              title: titleEl.value,
+              text: textEl.value,
+            }
+          );
+
+          if (res.data.success) {
+            return window.location.replace(
+              window.location.protocol + `/speeches/${res.data.speech._id}`
+            );
+          }
+        } catch (err) {
+          document.getElementById('error').innerText = err;
+        }
+        document.getElementById('error').innerText =
+          'Das hat leider nicht geklappt!';
+      }
+    </script>
+    <style>
+      :root {
+        font-size: 32px;
+      }
+
+      #error {
+        font-size: 60px;
+        color: red;
+        font-weight: 600;
+      }
+
+      .form {
+        max-width: 90%;
+        max-width: 650px;
+
+        margin: auto;
+
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form * {
+        font-size: 32px;
+      }
+
+      .form button {
+        font-weight: bold;
+      }
+
+      button:hover {
+        cursor: pointer;
+      }
+
+      .form textarea {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        height: calc(100vh - 16rem);
+      }
+    </style>
+  </body>
+</html>
