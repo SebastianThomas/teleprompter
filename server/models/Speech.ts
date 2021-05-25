@@ -1,14 +1,18 @@
 import fs from 'fs';
 
-export const filePath: string = '../speeches/speeches.json';
+export const filePath: string = './server/speeches/speeches.json';
 
 export class Speech {
   title: string;
   text: string;
 
-  constructor(title: string, text: string) {
+  constructor(title: string = 'Default', text: string = 'None') {
     this.title = title;
     this.text = text;
+  }
+
+  static from(json: any) {
+    return Object.assign(new Speech(), json);
   }
 
   static saveSpeechesToFile(speeches: Speech[]) {
@@ -19,19 +23,12 @@ export class Speech {
 
   static getSpeechesFromFile(): Promise<Speech[]> {
     const promise: Promise<Speech[]> = new Promise((resolve, reject) => {
-      fs.readFile(filePath, (err, data) => {
-        if (err) reject(err);
-        const d = data.toJSON();
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) return reject(err);
+        const d = JSON.parse(data);
 
-        console.log(d);
+        const speeches: Speech[] = d.map((s: any) => Speech.from(s));
 
-        const speeches: Speech[] = [new Speech('Hi', 'Speech text')];
-
-        // const speeches: Speech[] = d.map(s => {
-        //   return new Speech(s.title, s.text);
-        // });
-
-        // return speeches;
         resolve(speeches);
       });
     });

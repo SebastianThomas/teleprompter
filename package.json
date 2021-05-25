@@ -5,7 +5,7 @@
   "main": "server/index.ts",
   "scripts": {
     "start": "node server/index.ts",
-    "dev": "nodemon server/index.ts --ignore server/speeches/"
+    "dev": "nodemon server/index.ts --ignore server/speeches/ --ignore client/"
   },
   "repository": {
     "type": "git",
