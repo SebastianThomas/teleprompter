@@ -3,6 +3,8 @@
 ## Setup
 Make sure there is a `speeches.json`-file in `server/speeches/` which contains at least an empty pair of `[]`-brackets. 
 
+Run `npm i` or `npm install` to install all dependencies.
+
 ## Run
 The command `npm run start` starts the compiled server on default port 5000. 
 
