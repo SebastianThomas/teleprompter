@@ -4,8 +4,9 @@
   "description": "",
   "main": "server/index.ts",
   "scripts": {
-    "start": "node server/index.ts",
-    "dev": "nodemon server/index.ts --ignore server/speeches/ --ignore client/"
+    "start": "node dist/server/index.js",
+    "dev": "nodemon server/index.ts --ignore server/speeches/ --ignore client/",
+    "build": "tsc -p . && mkdir dist/client/ && cp -r client/html/ dist/client/"
   },
   "repository": {
     "type": "git",
