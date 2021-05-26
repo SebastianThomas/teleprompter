@@ -15,3 +15,11 @@ If you want to run the server with hot reload and TS-support, try `npm run dev`.
 ## Models
 ### `Speech.ts`
 A `Speech` has a unique `_id`, a `title` and the main body, called `text`. The `text` will scroll while the `title` is fixed at the top of the page. 
+
+## Contribute
+If you want to contribute, please follow these steps: 
+1. Write the code (as you should expect) in a separate branch. Please prefer TypeScript over plain JavaScript and use its possibilities as often as possible! 
+2. Make sure your code works as expected (test all functionality).
+3. Run the `npm run build`-command, which clears your `speeches.json` and converts your code from TS to JS.  
+4. When you are ready, open a new Pull Request (PR), in which you explain what you've done, and link a related issue if you fixed one. Probably, you should add a few lines to this README.md if you added a new feature. 
+5. Wait for the PR to be merged; thank you for your contribution!
