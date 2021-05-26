@@ -5,12 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teleprompter - Neue Rede</title>
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <div class="container">
       <div class="form">
         <input id="speech-title" type="text" placeholder="Titel" />
-        <textarea id="speech-text" cols="30" rows="10"></textarea>
+
+        <div class="sample-toolbar">
+          <a href="javascript:void(0)" onclick="format('bold')"
+            ><span class="fa fa-bold fa-fw"></span
+          ></a>
+          <a href="javascript:void(0)" onclick="format('italic')"
+            ><span class="fa fa-italic fa-fw"></span
+          ></a>
+          <a href="javascript:void(0)" onclick="format('insertunorderedlist')"
+            ><span class="fa fa-list fa-fw"></span
+          ></a>
+        </div>
+
+        <div class="editor speech-text" id="speech-text-editor"></div>
 
         <button onclick="submitSpeech()">Bestätigen</button>
       </div>
@@ -21,9 +41,9 @@
     <script>
       async function submitSpeech() {
         const titleEl = document.getElementById('speech-title');
-        const textEl = document.getElementById('speech-text');
+        const textEl = document.getElementById('speech-text-editor');
 
-        if (!titleEl.value || !textEl.value) {
+        if (!titleEl.value || !textEl.innerHTML) {
           console.log('Beide Felder ausfüllen');
           document.getElementById('error').innerText =
             'Bitte beide Felder ausfüllen!';
@@ -37,7 +57,7 @@
             window.location.protocol + '/api/speeches/',
             {
               title: titleEl.value,
-              text: textEl.value,
+              text: textEl.innerHTML,
             }
           );
 
@@ -51,6 +71,17 @@
         }
         document.getElementById('error').innerText =
           'Das hat leider nicht geklappt!';
+      }
+
+      // EDITOR
+      window.addEventListener('load', function () {
+        document
+          .getElementById('speech-text-editor')
+          .setAttribute('contenteditable', 'true');
+      });
+
+      function format(command, value) {
+        document.execCommand(command, false, value);
       }
     </script>
     <style>
@@ -90,6 +121,28 @@
         margin-top: 1rem;
         margin-bottom: 1rem;
         height: calc(100vh - 16rem);
+      }
+
+      /* EDITOR: https://www.thatsoftwaredude.com/content/8912/create-a-basic-text-editor-in-javascript */
+      .editor {
+        border: solid 1px #ccc;
+        padding: 20px;
+        min-height: 200px;
+      }
+
+      .sample-toolbar {
+        border: solid 1px #ddd;
+        background: #f4f4f4;
+        padding: 5px;
+        border-radius: 3px;
+      }
+
+      .sample-toolbar > span {
+        cursor: pointer;
+      }
+
+      .sample-toolbar > span:hover {
+        text-decoration: underline;
       }
     </style>
   </body>

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server/index.js",
     "dev": "nodemon server/index.ts --ignore server/speeches/ --ignore client/",
-    "build": "tsc -p . && mkdir dist/client/ && cp -r client/html/ dist/client/"
+    "build": "echo '[]' > server/speeches/speeches.json && tsc -p . && rm -rf dist/client/ && mkdir dist/client/ && cp -r client/html/ dist/client/"
   },
   "repository": {
     "type": "git",
